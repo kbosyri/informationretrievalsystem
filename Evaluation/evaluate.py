@@ -20,13 +20,13 @@ for qrel in dataset.qrels_iter():
 def GetRelevances(result,query,dataset_id):
     response = list()
     qrels = {}
-
+    
     if dataset_id == "1":
         qrels = qrels1
 
     else:
         qrels = qrels2
-        
+    
     for doc in result:
         doc['relevance'] = qrels.get(query['id'] + "," + doc["id"])
         print("Query ID:"+query['id'])
@@ -34,4 +34,5 @@ def GetRelevances(result,query,dataset_id):
         print(qrels.get(query['id'] + "," + doc["id"]))
         response.append(doc)
 
+    print(dataset_id)
     return response

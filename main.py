@@ -12,11 +12,12 @@ for query in dataset.queries_iter():
 
 app = Flask(__name__)
 
-def Calculate_Precision_k(query):
+def Calculate_Precisions(query):
     relevants = 0
     position = 1
     precisions = []
     for result in query['results']:
+        print(result['relevance'])
         if result['relevance'] != None:
             relevants = relevants + 1
 
@@ -38,6 +39,9 @@ def Calculate_AP(query):
 
         index = index + 1
 
+    if relevants == 0:
+        return 0
+    
     return precision/relevants
 
 
@@ -89,10 +93,10 @@ def Evalute(dataset_value):
             temp = requests.post("http://localhost:5004/match",json={'query':temp.json().get('query'),'dataset':dataset_value})
             temp = requests.post("http://localhost:5006/evaluate",json={'result':temp.json().get('results')
                                                                 ,'query':{'id':query.query_id,'text':query.text
-                                                                ,'dataset':dataset_value}})
+                                                                },'dataset':dataset_value})
 
             final = {}
-            final['resluts'] = temp.json().get('results')
+            final['results'] = temp.json().get('results')
             final['query'] = query.text
             final['query_id'] = query.query_id
             final['count'] = len(temp.json().get('results'))

@@ -8,15 +8,16 @@
 </head>
 <body>
     <h1>Eval Testing</h1>
-
+    <p>MAP:{{results['MAP']}}</p>
     {% for result in results['queries'] %}
         <div>
             <p>Query ID: {{result['query_id']}} <br>
+                AP:{{result['AP']}} <br>
                 Query Text: {{result['query']}} <br>
                 <button id="{{result['query_id']}}" onclick="myFunction(this)" >Show</button>
                 <div id="show_{{result['query_id']}}" style="display: none;">
                     <p>Count: {{result['count']}}</p>
-                    {% for doc in result['resluts'] %}
+                    {% for doc in result['results'] %}
                     <p>Score: {{doc['score']}}</p>
                     <p>ID: {{doc['id']}}</p>
                     <p>Relevance: {{doc['relevance']}}</p>
