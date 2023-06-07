@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Eval Testing</h1>
+
+    {% for result in results['queries'] %}
+        <div>
+            <p>Query ID: {{result['query_id']}} <br>
+                Query Text: {{result['query']}} <br>
+                <button id="{{result['query_id']}}" onclick="myFunction(this)" >Show</button>
+                <div id="show_{{result['query_id']}}" style="display: none;">
+                    <p>Count: {{result['count']}}</p>
+                    {% for doc in result['resluts'] %}
+                    <p>Score: {{doc['score']}}</p>
+                    <p>ID: {{doc['id']}}</p>
+                    <p>Relevance: {{doc['relevance']}}</p>
+                    <p>{{doc['text']}}</p>
+                    <hr>
+                    {% endfor %}
+                </div>
+            </p>
+            <hr>
+
+            <hr>
+        </div>
+    {% endfor %}
+    <script>
+        function myFunction(element) {
+            var button_id = element.id;
+            var x = document.getElementById("show_"+button_id);
+            if (x.style.display === "none") {
+              x.style.display = "block";
+            } else {
+              x.style.display = "none";
+            }
+          }
+    </script>
+</body>
+</html>

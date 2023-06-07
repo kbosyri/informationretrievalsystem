@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>Please Enter The Query: </p>
+    <form action="" method="post">
+        <input id="query-box" type="text" name="input" value="{{query}}"> <button id="start-btn" title="Start">Start Voice Query</button><br>
+        Please Choose The Dataset: <br>
+        Antique:<input type="radio" name="dataset" value="1" id=""><br>
+        WikIR:<input type="radio" name="dataset" value="2" id=""><br>
+        <input type="submit" value="submit">
+    </form>
+    <p>{{count}}</p>
+    {% for result in results %}
+    <p>Score: {{result['score']}}</p>
+    <p>ID: {{result['id']}}</p>
+    <p>Relevance: {{result['relevance']}}</p>
+    <p>{{result['text']}}</p>
+    <hr>
+    {% endfor %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='tempscript.js') }}"></script>
+</body>
+</html>
