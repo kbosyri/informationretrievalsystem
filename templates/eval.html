@@ -9,10 +9,15 @@
 <body>
     <h1>Eval Testing</h1>
     <p>MAP:{{results['MAP']}}</p>
+    <p>MRR:{{results['MRR']}}</p>
+    <p>Average Precision@10:{{results['ap@10']}}</p>
+    <p>Average Recall@10:{{results['ar@10']}}</p>
     {% for result in results['queries'] %}
         <div>
             <p>Query ID: {{result['query_id']}} <br>
                 AP:{{result['AP']}} <br>
+                Precision@10:{{result['precision@10']}} <br>
+                Recall@10:{{result['recall@10']}} <br>
                 Query Text: {{result['query']}} <br>
                 <button id="{{result['query_id']}}" onclick="myFunction(this)" >Show</button>
                 <div id="show_{{result['query_id']}}" style="display: none;">

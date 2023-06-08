@@ -53,6 +53,15 @@ def LemmatizeTokens(tokens):
 
     return final_words
 
+def Stem(tokens):
+    ps = PorterStemmer()
+    result = []
+
+    for token in tokens:
+        result.append(ps.stem(token))
+
+    return result
+
 def Process(query):
     tokens = Tokenize(query)
     tokens = POS_Tagging(tokens)

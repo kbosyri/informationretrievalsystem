@@ -4,12 +4,6 @@ import ir_datasets
 import json
 from pathlib import Path
 
-queries = {}
-dataset = ir_datasets.load('antique/train')
-
-for query in dataset.queries_iter():
-    queries[query.query_id] = query.text
-
 app = Flask(__name__)
 
 def Calculate_Precisions(query):
@@ -26,6 +20,43 @@ def Calculate_Precisions(query):
 
     return precisions
         
+def Calculate_Recall(query):
+    relevants = 0
+    caught = 0
+    recalls = []
+    for result in query['results']:
+        if result['relevance'] != None:
+            relevants = relevants + 1
+        
+    for result in query['results']:
+        if result['relevance'] != None:
+            caught = caught + 1
+
+        if relevants == 0:
+            recalls.append(0.0)
+
+        else:
+            recalls.append(caught/relevants)
+
+    return recalls
+
+def Calculate_Reciprocal(query):
+    position = 1
+    for result in query['results']:
+        if result['relevance'] != None:
+            break
+
+        position = position + 1
+
+    return 1/position
+
+def Calculate_MRR(result,count):
+    reciprocals = 0
+
+    for query in result['queries']:
+        reciprocals = reciprocals + query['reciprocal']
+
+    return reciprocals/count
 
 def Calculate_AP(query):
     relevants = 0
@@ -53,8 +84,22 @@ def Calculate_MAP(result,count):
 
     return APs/count
 
+def average_precision(result,count):
+    precisions = 0
+    for query in result['queries']:
+        precisions = precisions + query['precision@10']
+
+    return precisions/count
+
+def average_recalls(result,count):
+    recalls = 0
+    for query in result['queries']:
+        recalls = recalls + query['recall@10']
+
+    return recalls/count
+
 @app.route("/",methods=["GET","POST"])
-def helloworld():
+def Serve():
     if request.method == "GET":
         return render_template("temp.html")
 
@@ -101,10 +146,34 @@ def Evalute(dataset_value):
             final['query_id'] = query.query_id
             final['count'] = len(temp.json().get('results'))
             final['precisions'] = Calculate_Precisions(final)
+            final['recalls'] = Calculate_Recall(final)
+            final['reciprocal'] = Calculate_Reciprocal(final)
+            print("Len P:")
+            print(len(final['precisions']))
+            print("Len R:")
+            print(len(final['recalls']))
+            if len(final['precisions']) >= 10:
+                final['precision@10'] = final['precisions'][9]
+            elif len(final['precisions']) == 0:
+                final['precision@10'] = 0.0
+            else:
+                final['precision@10'] = final['precisions'][len(final['precisions'])-1]
+
+            if len(final['recalls']) >= 10:
+                final['recall@10'] = final['recalls'][9]
+            elif len(final['recalls']) == 0:
+                final['recall@10'] = 0.0
+            else:
+                final['recall@10'] = final['recalls'][len(final['recalls'])-1]
+
             final['AP'] = Calculate_AP(final)
+            
             results['queries'].append(final)
         
         results['MAP'] = Calculate_MAP(results, count)
+        results['MRR'] = Calculate_MRR(results, count)
+        results['ap@10'] = average_precision(results, count)
+        results['ar@10'] = average_recalls(results, count)
 
         if dataset_value == "1":
             with open("eval.json",'w') as eval:
