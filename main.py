@@ -1,10 +1,20 @@
-from flask import Flask,request,render_template
+from flask import Flask,request,render_template,jsonify
 import requests
 import ir_datasets
 import json
 from pathlib import Path
+from fast_autocomplete import AutoComplete
 
 app = Flask(__name__)
+
+words = {}
+main_dataset = ir_datasets.load("antique/train")
+for query in main_dataset.queries_iter():
+    words[query.text]={}
+
+main_dataset = ir_datasets.load("wikir/en1k/training")
+for query in main_dataset.queries_iter():
+    words[query.text]={}
 
 def Calculate_Precisions(query):
     relevants = 0
@@ -167,7 +177,7 @@ def Evalute(dataset_value):
                 final['recall@10'] = final['recalls'][len(final['recalls'])-1]
 
             final['AP'] = Calculate_AP(final)
-            
+
             results['queries'].append(final)
         
         results['MAP'] = Calculate_MAP(results, count)
@@ -197,3 +207,16 @@ def Evalute(dataset_value):
 
     return render_template("eval.html",results = results)
 
+@app.route('/auto-complete')
+def autocomplete():
+    autocomplete = AutoComplete(words=words)
+    search = request.args.get("q")
+    results = autocomplete.search(word=search,max_cost=5,size=5)
+    final = []
+    for result in results:
+        final.append(" ".join(result))
+
+    print(final)
+    response = jsonify(auto_complete=final)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response

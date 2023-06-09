@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css"
+        rel="stylesheet" type="text/css" />  
     <title>Document</title>
 </head>
 <body>
     <p>Please Enter The Query: </p>
     <form action="" method="post">
-        <input id="query-box" type="text" name="input" value="{{query}}"> <button id="start-btn" title="Start">Start Voice Query</button><br>
+        <input id="query-box" type="text" name="input" value="{{query}}" onkeydown="GetAutoComplete(this)"> <button id="start-btn" title="Start">Start Voice Query</button><br>
         Please Choose The Dataset: <br>
         Antique:<input type="radio" name="dataset" value="1" id=""><br>
         WikIR:<input type="radio" name="dataset" value="2" id=""><br>
@@ -24,6 +27,12 @@
     <hr>
     {% endfor %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">  
+    </script>  
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js">  
+    </script>  
+    <script src="{{url_for('static',filename='auto-complete.js')}}"></script>
     <script src="{{ url_for('static', filename='tempscript.js') }}"></script>
 </body>
 </html>
