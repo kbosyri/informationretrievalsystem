@@ -115,7 +115,7 @@ def calculate_query_tfidf_pandas(query):
     # Print the resulting TF-IDF scores
     return df
 
-file = cwd.absolute()/ 'tfidf' / 'Files' / 'tfidf.json'
+file = cwd.absolute() / 'Files' / 'tfidf.json'
 
 with file.open('r', encoding='utf-8') as tfidf_file:
     print("Loading TFIDF Vector!")
